@@ -4,7 +4,7 @@ exec tail -n +3 $0
 # menu entries you want to add after this comment.  Be careful not to change
 # the 'exec tail' line above.
 
-menuentry "reinstall-server" {
+menuentry "reinstall_server" {
     set root={{ reinstall_grub_root }}
     linux /vmlinuz ks={{ reinstall_grub_ks_url }} {{ reinstall_additional_kernel_params }}
     initrd /initrd.img
