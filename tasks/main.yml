@@ -29,6 +29,9 @@
   - "{{ reinstall_vmlinuz_url }}"
   - "{{ reinstall_initrd_url }}"
 
+- name: "generate new grub config"
+  shell: "grub2-mkconfig --output=/boot/grub2/grub.cfg"
+
 - name: "clean SSH key from authorized_hosts"
   local_action: command ssh-keygen -R "{{ ansible_fqdn }}"
       
