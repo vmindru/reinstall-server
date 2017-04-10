@@ -12,11 +12,12 @@ none
 Role Variables
 --------------
 
-reinstall_ks_url: URL to your kickstart file 
-reinstall_vmlinuz_url: URL to your vmlinuz file
-reinsatll_initrd_url: URL to your initird file
-
-
+    reinstall_ks_url: URL to your kickstart file 
+    reinstall_vmlinuz_url: URL to your vmlinuz file
+    reinsatll_initrd_url: URL to your initird file
+    reinstall_grub_root: default disk to reinstall on 
+    reinstall_grub_ks_url: variable used for a prompt during manual execution, used to avoid accidental reinstalls
+    reinstall_additioanl_kernel_params: additioanl parameters to be passed to linux section of grub entry
 
 Example Playbook
 ----------------
