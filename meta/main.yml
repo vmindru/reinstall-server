@@ -1,0 +1,8 @@
+galaxy_info:
+  author: Veaceslav Mindru
+  description: perform server reinstall based on kickstart and grub RHEL7 based
+  company: Red hat
+  license: GNU GPLv3
+  min_ansible_version: 2.2
+  galaxy_tags: []
+dependencies: []

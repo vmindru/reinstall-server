@@ -1,0 +1,48 @@
+---
+# tasks file for reinstall_server
+- name: "Fail if server_reinstall is not yes"
+  fail:
+    msg: "Will not Reinstalling server {{ ansible_fqdn }}"
+  when: server_reinstall != "yes"
+
+- name: "check that reinstall_grub_ks_url is set"
+  fail:
+    msg: "looks like you did not set reinstall_grub_ks_url"
+  when: not reinstall_grub_ks_url
+
+- name: "add GRUB entry"
+  template:
+    src: 40_custom.jnl
+    dest: /etc/grub.d/40_custom
+
+- name: "add default GRUB entry"
+  lineinfile:
+    dest: "/etc/default/grub"
+    regexp: '^ *GRUB_DEFAULT=.*$'
+    line: 'GRUB_DEFAULT="reinstall_server"'
+
+- name: "download vmlinuz and initrd"
+  get_url: 
+    url: "{{ item.url }}"
+    dest: "/boot/{{ item.name }}"
+  with_items: 
+  - "{{ reinstall_vmlinuz_url }}"
+  - "{{ reinstall_initrd_url }}"
+
+- name: "clean SSH key from authorized_hosts"
+  local_action: command ssh-keygen -R "{{ ansible_fqdn }}"
+      
+- name: reboot nodes
+  shell: sleep 2 && shutdown -r now "Ansible reboot"
+  async: 1
+  poll: 0
+  ignore_errors: true
+
+- name: wait for server to come back
+  local_action: wait_for
+  args:
+   host: "{{ inventory_hostname }}"
+   port: 22
+   state: started
+   delay: 30
+   timeout: 300 

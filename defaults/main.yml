@@ -1,0 +1,11 @@
+---
+# defaults file for reinstall_server
+#
+
+reinstall_grub_root: "(hd0,1)" # default disk to reinstalll too
+#reinstall_grub_ks_url:  no default, this one should be prompted in a playbook 
+#                        if not set
+reinstall_additional_kernel_params: "" # aditional paramters to be passed to 
+                                       # linux section of grubb entry
+reinstall_vmlinuz_url: "http://some_url/vmlinuz"
+reinstall_initr_url:  "http://some_url/init.rd"

@@ -1,0 +1,94 @@
+install
+text
+reboot
+skipx
+
+
+url --url {{ reinstall_network_install_url }} # e.g. http://mirror.centos.org/centos/7/os/x86_64/
+
+#Language Support
+lang en_US.UTF-8
+keyboard us
+
+bootloader --location=mbr
+
+#Set Root Password
+rootpw --plaintext rootpw
+
+#Setup Networking
+network --device eth0 --onboot yes --bootproto dhcp  --hostname {{ ansible_fqdn }}
+#Setup Authentication Method
+authconfig --useshadow --enablemd5 --enablesssd --enablesssdauth
+
+#Set selinux mode
+selinux --permissive
+
+#Setup firewall. By default block all but ssh.
+firewall --enabled --port=22:tcp
+
+#Set Timezone
+timezone --utc America/New_York
+
+
+
+#Disk Setup
+zerombr
+clearpart --all --initlabel
+part /boot --fstype ext4 --size=900 --ondisk=sda
+part swap --size=4096
+part pv.7 --size=1 --grow --ondisk=sda
+volgroup system --pesize=4096 pv.7
+logvol / --fstype ext4 --name=root --vgname=system --size=25600
+logvol /home --fstype ext4 --name=home --vgname=system --size=10000
+logvol /var --fstype ext4 --name=var --vgname=system --size=10000
+logvol /tmp --fstype ext4 --name=tmp --vgname=system --size=4000
+
+
+
+%packages --ignoremissing
+yum
+dhclient
+ntp
+wget
+libselinux-python
+libsemanage-python
+policycoreutils-python
+bash-completion
+rsync
+strace
+nmap-ncat
+sysstat
+perf
+ntp
+lsof
+vim-enhanced
+yum-utils
+iptraf-ng
+bind-utils
+screen
+tcpdump
+wireshark
+bzip2
+unzip
+@Core
+%end
+
+
+
+%pre --interpreter=/bin/sh
+set -x
+%end
+%post --interpreter=/bin/bash
+(
+
+# Set date before reboot
+ntpdate 10.16.255.1 
+hwclock --systohc --utc
+
+) &> /root/ks_output.log
+%end
+
+
+
+
+
